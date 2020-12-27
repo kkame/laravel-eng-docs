@@ -1,7 +1,7 @@
 # 블레이드 템플릿
 
 - [소개](#introduction)
-- [Template Inheritance](#template-inheritance)
+- [템플릿 상속](#template-inheritance)
     - [레이아웃 정의](#defining-a-layout)
     - [레이아웃 확장](#extending-a-layout)
 - [부품 및 슬롯](#components-and-slots)
@@ -274,7 +274,7 @@ Hello, @{{ name }}.
 
 #### `@verbatim` 지시어
 
-If you are displaying JavaScript variables in a large portion of your template, you may wrap the HTML in the `@verbatim` directive so that you do not have to prefix each Blade echo statement with an `@` symbol:
+템플릿의 많은 부분에 자바 스크립트 변수를 표시하는 경우 ` @verbatim ` 지시문에서 HTML을 래핑하여 각 Blade echo 문 앞에  기호 `@` 을 붙일 필요가 없습니다.
 
 ```
 @verbatim
@@ -294,7 +294,7 @@ If you are displaying JavaScript variables in a large portion of your template, 
 
 ### If 문
 
-You may construct `if` statements using the `@if`, `@elseif`, `@else`, and `@endif` directives. These directives function identically to their PHP counterparts:
+<code> @if </code>, <code> @elseif </code>, <code> @else </code> 및 <code> @endif</code> 지시문을 사용하여 <code> if </code> 문을 생성 할 수 있습니다. 이 지시문은 PHP 대응 지시문과 동일하게 작동합니다.
 
 ```
 @if (count($records) === 1)
@@ -413,7 +413,7 @@ Switch 문은 `@switch` , `@case` , `@break` , `@default` 및 `@endswitch` 지�
 @endwhile
 ```
 
-> {tip} When looping, you may use the [loop variable](#the-loop-variable) to gain valuable information about the loop, such as whether you are in the first or last iteration through the loop.
+> {tip} 루핑 할 때 [ 루프 변수 ](#the-loop-variable)를 사용하여 루프의 첫 번째 또는 마지막 반복에 있는지 여부와 같은 루프에 대한 중요한 정보를 얻을 수 있습니다.
 
 루프를 사용할 때 루프를 종료하거나 현재 반복을 건너 뛸 수도 있습니다.
 
@@ -586,7 +586,7 @@ Blade를 사용하면 다른 뷰 또는 레이아웃의 다른 곳에서 렌더�
 @endpush
 ```
 
-You may push to a stack as many times as needed. To render the complete stack contents, pass the name of the stack to the `@stack` directive:
+필요한만큼 여러 번 스택으로 푸시 할 수 있습니다. 전체 스택 콘텐츠를 렌더링하려면 스택 이름을 ` @stack ` 지시문에 전달합니다.
 
 ```
 <head>
