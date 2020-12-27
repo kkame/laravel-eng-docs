@@ -374,7 +374,7 @@ $password = $this->secret('What is the password?');
 
 #### 확인 요청
 
-If you need to ask the user for a simple confirmation, you may use the `confirm` method. By default, this method will return `false`. However, if the user enters `y` or `yes` in response to the prompt, the method will return `true`.
+만약 간단한 확인이 필요한 경우 `confirm` 메서드를 사용할 수 있다. 기본적으로 이 메서드는 `false`를 반환한다. 하지만 사용자가 프롬프트에서 `y` 또는 `yes` 를 입력하면 `true`가 반환된다.
 
 ```
 if ($this->confirm('Do you wish to continue?')) {
