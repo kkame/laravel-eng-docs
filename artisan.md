@@ -19,7 +19,7 @@
     - [Calling Commands From Other Commands](#calling-commands-from-other-commands)
 
 <a name="introduction"></a>
-## Introduction
+## Introduce
 
 Artisan is the command-line interface included with Laravel. It provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
 
