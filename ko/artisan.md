@@ -2,41 +2,41 @@
 
 - [소개](#introduction)
 - [명령 작성](#writing-commands)
-    - [Generating Commands](#generating-commands)
-    - [Command Structure](#command-structure)
-    - [Closure Commands](#closure-commands)
-- [Defining Input Expectations](#defining-input-expectations)
-    - [Arguments](#arguments)
-    - [Options](#options)
-    - [Input Arrays](#input-arrays)
-    - [Input Descriptions](#input-descriptions)
-- [Command I/O](#command-io)
-    - [Retrieving Input](#retrieving-input)
-    - [Prompting For Input](#prompting-for-input)
-    - [Writing Output](#writing-output)
-- [Registering Commands](#registering-commands)
-- [Programmatically Executing Commands](#programmatically-executing-commands)
-    - [Calling Commands From Other Commands](#calling-commands-from-other-commands)
+    - [명령 생성](#generating-commands)
+    - [명령 구조](#command-structure)
+    - [폐쇄 명령](#closure-commands)
+- [입력 기대치 정의](#defining-input-expectations)
+    - [인수](#arguments)
+    - [옵션](#options)
+    - [입력 배열](#input-arrays)
+    - [입력 설명](#input-descriptions)
+- [명령 I / O](#command-io)
+    - [입력 검색](#retrieving-input)
+    - [입력 요청](#prompting-for-input)
+    - [출력 쓰기](#writing-output)
+- [명령 등록](#registering-commands)
+- [프로그래밍 방식으로 명령 실행](#programmatically-executing-commands)
+    - [다른 명령에서 명령 호출](#calling-commands-from-other-commands)
 
 <a name="introduction"></a>
 
-## Introduction
+## 소개
 
-Artisan is the command-line interface included with Laravel. It provides a number of helpful commands that can assist you while you build your application. To view a list of all available Artisan commands, you may use the `list` command:
+Artisan은 Laravel에 포함 된 명령 줄 인터페이스입니다. 응용 프로그램을 빌드하는 동안 도움이 될 수있는 여러 가지 유용한 명령을 제공합니다. 사용 가능한 모든 Artisan 명령 목록을 보려면 `list` 명령을 사용할 수 있습니다.
 
 ```
 php artisan list
 ```
 
-Every command also includes a "help" screen which displays and describes the command's available arguments and options. To view a help screen, precede the name of the command with `help`:
+모든 명령에는 명령의 사용 가능한 인수 및 옵션을 표시하고 설명하는 "도움말"화면도 포함되어 있습니다. 도움말 화면을 보려면 명령 이름 앞에 `help` .
 
 ```
 php artisan help migrate
 ```
 
-#### Laravel REPL
+#### 라 라벨 REPL
 
-All Laravel applications include Tinker, a REPL powered by the [PsySH](https://github.com/bobthecow/psysh) package. Tinker allows you to interact with your entire Laravel application on the command line, including the Eloquent ORM, jobs, events, and more. To enter the Tinker environment, run the `tinker` Artisan command:
+모든 Laravel 애플리케이션에는 [PsySH](https://github.com/bobthecow/psysh) 패키지로 구동되는 REPL 인 Tinker가 포함됩니다. Tinker를 사용하면 Eloquent ORM, 작업, 이벤트 등을 포함하여 명령 줄에서 전체 Laravel 애플리케이션과 상호 작용할 수 있습니다. Tinker 환경에 들어가려면 `tinker` Artisan 명령을 실행하십시오.
 
 ```
 php artisan tinker
@@ -44,15 +44,15 @@ php artisan tinker
 
 <a name="writing-commands"></a>
 
-## Writing Commands
+## 명령 작성
 
-In addition to the commands provided with Artisan, you may also build your own custom commands. Commands are typically stored in the `app/Console/Commands` directory; however, you are free to choose your own storage location as long as your commands can be loaded by Composer.
+Artisan과 함께 제공되는 명령 외에도 사용자 지정 명령을 만들 수도 있습니다. 명령은 일반적으로 `app/Console/Commands` 디렉토리에 저장됩니다. 그러나 Composer에서 명령을로드 할 수있는 한 자신의 저장 위치를 자유롭게 선택할 수 있습니다.
 
 <a name="generating-commands"></a>
 
-### Generating Commands
+### 명령 생성
 
-To create a new command, use the `make:command` Artisan command. This command will create a new command class in the `app/Console/Commands` directory. Don't worry if this directory does not exist in your application, since it will be created the first time you run the `make:command` Artisan command. The generated command will include the default set of properties and methods that are present on all commands:
+새 명령을 생성하려면 `make:command` Artisan 명령을 사용하십시오. 이 명령은 `app/Console/Commands` 디렉터리에 새 명령 클래스를 만듭니다. `make:command` Artisan 명령을 처음 실행할 때 생성되므로이 디렉토리가 애플리케이션에 존재하지 않아도 걱정하지 마십시오. 생성 된 명령에는 모든 명령에있는 기본 속성 및 메서드 집합이 포함됩니다.
 
 ```
 php artisan make:command SendEmails
@@ -60,11 +60,11 @@ php artisan make:command SendEmails
 
 <a name="command-structure"></a>
 
-### Command Structure
+### 명령 구조
 
-After generating your command, you should fill in the `signature` and `description` properties of the class, which will be used when displaying your command on the `list` screen. The `handle` method will be called when your command is executed. You may place your command logic in this method.
+명령을 생성 한 후 `list` 화면에 명령을 표시 할 때 사용할 클래스의 `signature` 및 `description` 속성을 입력해야합니다. `handle` 메서드는 명령이 실행될 때 호출됩니다. 이 메서드에 명령 논리를 배치 할 수 있습니다.
 
-> {tip} For greater code reuse, it is good practice to keep your console commands light and let them defer to application services to accomplish their tasks. In the example below, note that we inject a service class to do the "heavy lifting" of sending the e-mails.
+> {tip} 코드 재 사용률을 높이려면 콘솔 명령을 가볍게 유지하고 작업을 수행하기 위해 애플리케이션 서비스를 연기하도록하는 것이 좋습니다. 아래의 예에서 우리는 이메일을 보내는 "무거운 작업"을 수행하기 위해 서비스 클래스를 삽입합니다.
 
 Let's take a look at an example command. Note that we are able to inject any dependencies we need into the command's constructor or `handle` method. The Laravel [service container](/docs/%7B%7Bversion%7D%7D/container) will automatically inject all dependencies type-hinted in the constructor or `handle` method:
 
@@ -127,9 +127,9 @@ class SendEmails extends Command
 
 <a name="closure-commands"></a>
 
-### Closure Commands
+### 폐쇄 명령
 
-Closure based commands provide an alternative to defining console commands as classes. In the same way that route Closures are an alternative to controllers, think of command Closures as an alternative to command classes. Within the `commands` method of your `app/Console/Kernel.php` file, Laravel loads the `routes/console.php` file:
+클로저 기반 명령은 콘솔 명령을 클래스로 정의하는 대안을 제공합니다. 라우트 클로저가 컨트롤러의 대안 인 것과 같은 방식으로 커맨드 클로저를 커맨드 클래스의 대안으로 생각하십시오. `app/Console/Kernel.php` 파일의 `commands` 메서드 내에서 Laravel은 `routes/console.php` 파일을로드합니다.
 
 ```
 /**
@@ -143,7 +143,7 @@ protected function commands()
 }
 ```
 
-Even though this file does not define HTTP routes, it defines console based entry points (routes) into your application. Within this file, you may define all of your Closure based routes using the `Artisan::command` method. The `command` method accepts two arguments: the [command signature](#defining-input-expectations) and a Closure which receives the commands arguments and options:
+이 파일은 HTTP 경로를 정의하지 않지만 콘솔 기반 진입 점 (경로)을 애플리케이션에 정의합니다. 이 파일 내에서 `Artisan::command` 메소드를 사용하여 모든 Closure 기반 경로를 정의 할 수 있습니다. `command` 메소드는 두 개의 인수를받습니다 : [명령 서명](#defining-input-expectations) 과 명령 인수와 옵션을받는 Closure :
 
 ```
 Artisan::command('build {project}', function ($project) {
@@ -151,11 +151,11 @@ Artisan::command('build {project}', function ($project) {
 });
 ```
 
-The Closure is bound to the underlying command instance, so you have full access to all of the helper methods you would typically be able to access on a full command class.
+Closure는 기본 명령 인스턴스에 바인딩되어 있으므로 일반적으로 전체 명령 클래스에서 액세스 할 수있는 모든 도우미 메서드에 대한 전체 액세스 권한이 있습니다.
 
-#### Type-Hinting Dependencies
+#### 유형 힌팅 종속성
 
-In addition to receiving your command's arguments and options, command Closures may also type-hint additional dependencies that you would like resolved out of the [service container](/docs/%7B%7Bversion%7D%7D/container):
+명령의 인수와 옵션을받는 것 외에도 명령 클로저는 [서비스 컨테이너](/docs/%7B%7Bversion%7D%7D/container) 에서 해결하려는 추가 종속성을 입력 힌트 할 수도 있습니다.
 
 ```
 use App\User;
@@ -166,9 +166,9 @@ Artisan::command('email:send {user}', function (DripEmailer $drip, $user) {
 });
 ```
 
-#### Closure Command Descriptions
+#### 폐쇄 명령 설명
 
-When defining a Closure based command, you may use the `describe` method to add a description to the command. This description will be displayed when you run the `php artisan list` or `php artisan help` commands:
+Closure 기반 명령을 정의 할 때 `describe` 메서드를 사용하여 명령에 설명을 추가 할 수 있습니다. 이 설명은 `php artisan list` 또는 `php artisan help` 명령을 실행할 때 표시됩니다.
 
 ```
 Artisan::command('build {project}', function ($project) {
@@ -178,15 +178,15 @@ Artisan::command('build {project}', function ($project) {
 
 <a name="defining-input-expectations"></a>
 
-## Defining Input Expectations
+## 입력 기대치 정의
 
-When writing console commands, it is common to gather input from the user through arguments or options. Laravel makes it very convenient to define the input you expect from the user using the `signature` property on your commands. The `signature` property allows you to define the name, arguments, and options for the command in a single, expressive, route-like syntax.
+콘솔 명령을 작성할 때 인수 또는 옵션을 통해 사용자로부터 입력을 수집하는 것이 일반적입니다. Laravel을 사용하면 명령의 `signature` 속성을 사용하여 사용자에게 기대하는 입력을 매우 편리하게 정의 할 수 있습니다. `signature` 속성을 사용하면 경로와 유사한 단일 표현 구문으로 명령의 이름, 인수 및 옵션을 정의 할 수 있습니다.
 
 <a name="arguments"></a>
 
-### Arguments
+### 인수
 
-All user supplied arguments and options are wrapped in curly braces. In the following example, the command defines one **required** argument: `user`:
+모든 사용자 제공 인수와 옵션은 중괄호로 묶여 있습니다. 다음 예제에서 명령은 하나의 **필수** 인수 인 `user` 정의합니다.
 
 ```
 /**
@@ -197,7 +197,7 @@ All user supplied arguments and options are wrapped in curly braces. In the foll
 protected $signature = 'email:send {user}';
 ```
 
-You may also make arguments optional and define default values for arguments:
+인수를 선택적으로 만들고 인수의 기본값을 정의 할 수도 있습니다.
 
 ```
 // Optional argument...
@@ -209,9 +209,9 @@ email:send {user=foo}
 
 <a name="options"></a>
 
-### Options
+### 옵션
 
-Options, like arguments, are another form of user input. Options are prefixed by two hyphens (`--`) when they are specified on the command line. There are two types of options: those that receive a value and those that don't. Options that don't receive a value serve as a boolean "switch". Let's take a look at an example of this type of option:
+인수와 같은 옵션은 사용자 입력의 또 다른 형태입니다. 옵션이 명령 줄에 지정되면 두 개의 하이픈 ( `--` ) 접두사가 붙습니다. 두 가지 유형의 옵션이 있습니다. 값을받는 옵션과 그렇지 않은 옵션입니다. 값을받지 않는 옵션은 부울 "스위치"역할을합니다. 이 옵션 유형의 예를 살펴 보겠습니다.
 
 ```
 /**
@@ -222,7 +222,7 @@ Options, like arguments, are another form of user input. Options are prefixed by
 protected $signature = 'email:send {user} {--queue}';
 ```
 
-In this example, the `--queue` switch may be specified when calling the Artisan command. If the `--queue` switch is passed, the value of the option will be `true`. Otherwise, the value will be `false`:
+이 예에서 Artisan 명령을 호출 할 때 `--queue` 스위치를 지정할 수 있습니다. `--queue` 스위치가 전달되면 옵션 값은 `true` 됩니다. 그렇지 않으면 값은 `false` .
 
 ```
 php artisan email:send 1 --queue
@@ -230,9 +230,9 @@ php artisan email:send 1 --queue
 
 <a name="options-with-values"></a>
 
-#### Options With Values
+#### 값이있는 옵션
 
-Next, let's take a look at an option that expects a value. If the user must specify a value for an option, suffix the option name with a `=` sign:
+다음으로 값을 기대하는 옵션을 살펴 보겠습니다. 사용자가 옵션 값을 지정해야하는 경우 옵션 이름에 `=` 기호를 붙입니다.
 
 ```
 /**
@@ -243,13 +243,13 @@ Next, let's take a look at an option that expects a value. If the user must spec
 protected $signature = 'email:send {user} {--queue=}';
 ```
 
-In this example, the user may pass a value for the option like so:
+이 예에서 사용자는 다음과 같이 옵션 값을 전달할 수 있습니다.
 
 ```
 php artisan email:send 1 --queue=default
 ```
 
-You may assign default values to options by specifying the default value after the option name. If no option value is passed by the user, the default value will be used:
+옵션 이름 뒤에 기본값을 지정하여 옵션에 기본값을 할당 할 수 있습니다. 사용자가 옵션 값을 전달하지 않으면 기본값이 사용됩니다.
 
 ```
 email:send {user} {--queue=default}
@@ -257,9 +257,9 @@ email:send {user} {--queue=default}
 
 <a name="option-shortcuts"></a>
 
-#### Option Shortcuts
+#### 옵션 단축키
 
-To assign a shortcut when defining an option, you may specify it before the option name and use a | delimiter to separate the shortcut from the full option name:
+옵션을 정의 할 때 바로 가기를 지정하려면 옵션 이름 앞에 지정하고 | 전체 옵션 이름에서 바로 가기를 구분하는 구분 기호 :
 
 ```
 email:send {user} {--Q|queue}
@@ -267,21 +267,21 @@ email:send {user} {--Q|queue}
 
 <a name="input-arrays"></a>
 
-### Input Arrays
+### 입력 배열
 
-If you would like to define arguments or options to expect array inputs, you may use the `*` character. First, let's take a look at an example that specifies an array argument:
+배열 입력을 기대하는 인수 또는 옵션을 정의하려면 `*` 문자를 사용할 수 있습니다. 먼저 배열 인수를 지정하는 예를 살펴 보겠습니다.
 
 ```
 email:send {user*}
 ```
 
-When calling this method, the `user` arguments may be passed in order to the command line. For example, the following command will set the value of `user` to `['foo', 'bar']`:
+이 메서드를 호출 할 때 `user` 인수가 명령 줄에 순서대로 전달 될 수 있습니다. 예를 들어 다음 명령은 `user` 의 값을 `['foo', 'bar']` .
 
 ```
 php artisan email:send foo bar
 ```
 
-When defining an option that expects an array input, each option value passed to the command should be prefixed with the option name:
+배열 입력을 예상하는 옵션을 정의 할 때 명령에 전달되는 각 옵션 값은 옵션 이름으로 시작해야합니다.
 
 ```
 email:send {user} {--id=*}
@@ -291,9 +291,9 @@ php artisan email:send --id=1 --id=2
 
 <a name="input-descriptions"></a>
 
-### Input Descriptions
+### 입력 설명
 
-You may assign descriptions to input arguments and options by separating the parameter from the description using a colon. If you need a little extra room to define your command, feel free to spread the definition across multiple lines:
+콜론을 사용하여 설명에서 매개 변수를 분리하여 입력 인수 및 옵션에 설명을 지정할 수 있습니다. 명령을 정의하기 위해 약간의 추가 공간이 필요하면 정의를 여러 줄로 자유롭게 분산하십시오.
 
 ```
 /**
@@ -308,13 +308,13 @@ protected $signature = 'email:send
 
 <a name="command-io"></a>
 
-## Command I/O
+## 명령 I / O
 
 <a name="retrieving-input"></a>
 
-### Retrieving Input
+### 입력 검색
 
-While your command is executing, you will obviously need to access the values for the arguments and options accepted by your command. To do so, you may use the `argument` and `option` methods:
+명령이 실행되는 동안 명령에서 허용하는 인수 및 옵션의 값에 액세스해야합니다. 이를 위해 `argument` 및 `option` 메소드를 사용할 수 있습니다.
 
 ```
 /**
@@ -330,13 +330,13 @@ public function handle()
 }
 ```
 
-If you need to retrieve all of the arguments as an `array`, call the `arguments` method:
+모든 인수를 `array` 로 검색해야하는 경우 `arguments` 메서드를 호출합니다.
 
 ```
 $arguments = $this->arguments();
 ```
 
-Options may be retrieved just as easily as arguments using the `option` method. To retrieve all of the options as an array, call the `options` method:
+옵션은 `option` 메소드를 사용하여 인수만큼 쉽게 검색 할 수 있습니다. 모든 옵션을 배열로 검색하려면 `options` 메소드를 호출하십시오.
 
 ```
 // Retrieve a specific option...
@@ -346,13 +346,13 @@ $queueName = $this->option('queue');
 $options = $this->options();
 ```
 
-If the argument or option does not exist, `null` will be returned.
+인수 또는 옵션이 없으면 `null` 이 반환됩니다.
 
 <a name="prompting-for-input"></a>
 
-### Prompting For Input
+### 입력 요청
 
-In addition to displaying output, you may also ask the user to provide input during the execution of your command. The `ask` method will prompt the user with the given question, accept their input, and then return the user's input back to your command:
+출력을 표시하는 것 외에도 명령을 실행하는 동안 입력을 제공하도록 사용자에게 요청할 수도 있습니다. `ask` 메소드는 사용자에게 주어진 질문을 프롬프트하고 입력을 수락 한 다음 사용자의 입력을 명령으로 되돌립니다.
 
 ```
 /**
@@ -366,13 +366,13 @@ public function handle()
 }
 ```
 
-The `secret` method is similar to `ask`, but the user's input will not be visible to them as they type in the console. This method is useful when asking for sensitive information such as a password:
+`secret` 방법은 `ask` 와 유사하지만 사용자가 콘솔에 입력 할 때 사용자의 입력이 표시되지 않습니다. 이 방법은 비밀번호와 같은 민감한 정보를 요청할 때 유용합니다.
 
 ```
 $password = $this->secret('What is the password?');
 ```
 
-#### Asking For Confirmation
+#### 확인 요청
 
 If you need to ask the user for a simple confirmation, you may use the `confirm` method. By default, this method will return `false`. However, if the user enters `y` or `yes` in response to the prompt, the method will return `true`.
 
@@ -382,17 +382,17 @@ if ($this->confirm('Do you wish to continue?')) {
 }
 ```
 
-#### Auto-Completion
+#### 자동 완성
 
-The `anticipate` method can be used to provide auto-completion for possible choices. The user can still choose any answer, regardless of the auto-completion hints:
+`anticipate` 방법을 사용하여 가능한 선택에 대한 자동 완성을 제공 할 수 있습니다. 사용자는 자동 완성 힌트에 관계없이 모든 답변을 선택할 수 있습니다.
 
 ```
 $name = $this->anticipate('What is your name?', ['Taylor', 'Dayle']);
 ```
 
-#### Multiple Choice Questions
+#### 객관식 질문
 
-If you need to give the user a predefined set of choices, you may use the `choice` method. You may set the array index of the default value to be returned if no option is chosen:
+사용자에게 미리 정의 된 선택 사항 집합을 제공해야하는 경우 `choice` 방법을 사용할 수 있습니다. 옵션을 선택하지 않은 경우 반환 될 기본값의 배열 인덱스를 설정할 수 있습니다.
 
 ```
 $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $defaultIndex);
@@ -400,9 +400,9 @@ $name = $this->choice('What is your name?', ['Taylor', 'Dayle'], $defaultIndex);
 
 <a name="writing-output"></a>
 
-### Writing Output
+### 출력 쓰기
 
-To send output to the console, use the `line`, `info`, `comment`, `question` and `error` methods. Each of these methods will use appropriate ANSI colors for their purpose. For example, let's display some general information to the user. Typically, the `info` method will display in the console as green text:
+콘솔에 출력을 보내려면 `line` , `info` , `comment` , `question` 및 `error` 메소드를 사용하십시오. 이러한 각 방법은 용도에 적합한 ANSI 색상을 사용합니다. 예를 들어 사용자에게 몇 가지 일반적인 정보를 표시해 보겠습니다. 일반적으로 `info` 메소드는 콘솔에 녹색 텍스트로 표시됩니다.
 
 ```
 /**
@@ -416,21 +416,21 @@ public function handle()
 }
 ```
 
-To display an error message, use the `error` method. Error message text is typically displayed in red:
+오류 메시지를 표시하려면 `error` 방법을 사용하십시오. 오류 메시지 텍스트는 일반적으로 빨간색으로 표시됩니다.
 
 ```
 $this->error('Something went wrong!');
 ```
 
-If you would like to display plain, uncolored console output, use the `line` method:
+색상이 지정되지 않은 일반 콘솔 출력을 표시하려면 `line` 메서드를 사용하십시오.
 
 ```
 $this->line('Display this on the screen');
 ```
 
-#### Table Layouts
+#### 테이블 레이아웃
 
-The `table` method makes it easy to correctly format multiple rows / columns of data. Just pass in the headers and rows to the method. The width and height will be dynamically calculated based on the given data:
+`table` 방법을 사용하면 데이터의 여러 행 / 열을 올바르게 형식화 할 수 있습니다. 헤더와 행을 메소드에 전달하기 만하면됩니다. 너비와 높이는 주어진 데이터를 기반으로 동적으로 계산됩니다.
 
 ```
 $headers = ['Name', 'Email'];
@@ -440,9 +440,9 @@ $users = App\User::all(['name', 'email'])->toArray();
 $this->table($headers, $users);
 ```
 
-#### Progress Bars
+#### 진행률 표시 줄
 
-For long running tasks, it could be helpful to show a progress indicator. Using the output object, we can start, advance and stop the Progress Bar. First, define the total number of steps the process will iterate through. Then, advance the Progress Bar after processing each item:
+장기 실행 작업의 경우 진행률 표시기를 표시하는 것이 도움이 될 수 있습니다. 출력 개체를 사용하여 진행률 표시 줄을 시작, 진행 및 중지 할 수 있습니다. 먼저 프로세스가 반복 할 총 단계 수를 정의합니다. 그런 다음 각 항목을 처리 한 후 진행률 표시 줄을 진행합니다.
 
 ```
 $users = App\User::all();
@@ -458,13 +458,13 @@ foreach ($users as $user) {
 $bar->finish();
 ```
 
-For more advanced options, check out the [Symfony Progress Bar component documentation](https://symfony.com/doc/current/components/console/helpers/progressbar.html).
+고급 옵션에 대해서는 [Symfony Progress Bar 구성 요소 문서를](https://symfony.com/doc/current/components/console/helpers/progressbar.html) 확인하십시오.
 
 <a name="registering-commands"></a>
 
-## Registering Commands
+## 명령 등록
 
-Because of the `load` method call in your console kernel's `commands` method, all commands within the `app/Console/Commands` directory will automatically be registered with Artisan. In fact, you are free to make additional calls to the `load` method to scan other directories for Artisan commands:
+콘솔 커널의 `commands` 메소드에서 `load` 메소드 호출로 인해 `app/Console/Commands` 디렉토리에있는 모든 명령이 자동으로 Artisan에 등록됩니다. 사실, 당신은 아티 즌 명령어를 위해 다른 디렉토리를 스캔하기 위해 `load` 메소드를 추가로 호출 할 수 있습니다 :
 
 ```
 /**
@@ -481,7 +481,7 @@ protected function commands()
 }
 ```
 
-You may also manually register commands by adding its class name to the `$commands` property of your `app/Console/Kernel.php` file. When Artisan boots, all the commands listed in this property will be resolved by the [service container](/docs/%7B%7Bversion%7D%7D/container) and registered with Artisan:
+`app/Console/Kernel.php` 파일의 `$commands` 속성에 클래스 이름을 추가하여 수동으로 명령을 등록 할 수도 있습니다. Artisan이 부팅되면이 속성에 나열된 모든 명령이 [서비스 컨테이너에](/docs/%7B%7Bversion%7D%7D/container) 의해 해결되고 Artisan에 등록됩니다.
 
 ```
 protected $commands = [
@@ -491,9 +491,9 @@ protected $commands = [
 
 <a name="programmatically-executing-commands"></a>
 
-## Programmatically Executing Commands
+## 프로그래밍 방식으로 명령 실행
 
-Sometimes you may wish to execute an Artisan command outside of the CLI. For example, you may wish to fire an Artisan command from a route or controller. You may use the `call` method on the `Artisan` facade to accomplish this. The `call` method accepts either the command's name or class as the first argument, and an array of command parameters as the second argument. The exit code will be returned:
+때로는 CLI 외부에서 Artisan 명령을 실행하고자 할 수 있습니다. 예를 들어, 경로 또는 컨트롤러에서 Artisan 명령을 실행하고자 할 수 있습니다. 이를 수행하기 위해 `Artisan` 파사드의 `call` 메소드를 사용할 수 있습니다. `call` 메소드는 명령의 이름 또는 클래스를 첫 번째 인수로, 명령 매개 변수 배열을 두 번째 인수로받습니다. 종료 코드가 반환됩니다.
 
 ```
 Route::get('/foo', function () {
@@ -505,7 +505,7 @@ Route::get('/foo', function () {
 });
 ```
 
-Using the `queue` method on the `Artisan` facade, you may even queue Artisan commands so they are processed in the background by your [queue workers](/docs/%7B%7Bversion%7D%7D/queues). Before using this method, make sure you have configured your queue and are running a queue listener:
+`Artisan` 파사드의 `queue` 메서드를 사용하면 Artisan 명령을 [대기열 작업자](/docs/%7B%7Bversion%7D%7D/queues) 가 백그라운드에서 처리하도록 대기열에 넣을 수도 있습니다. 이 방법을 사용하기 전에 큐를 구성하고 큐 리스너를 실행 중인지 확인하십시오.
 
 ```
 Route::get('/foo', function () {
@@ -517,7 +517,7 @@ Route::get('/foo', function () {
 });
 ```
 
-You may also specify the connection or queue the Artisan command should be dispatched to:
+Artisan 명령이 전달되어야하는 연결 또는 대기열을 지정할 수도 있습니다.
 
 ```
 Artisan::queue('email:send', [
@@ -525,9 +525,9 @@ Artisan::queue('email:send', [
 ])->onConnection('redis')->onQueue('commands');
 ```
 
-#### Passing Array Values
+#### 배열 값 전달
 
-If your command defines an option that accepts an array, you may pass an array of values to that option:
+명령이 배열을 허용하는 옵션을 정의하는 경우 해당 옵션에 값 배열을 전달할 수 있습니다.
 
 ```
 Route::get('/foo', function () {
@@ -537,9 +537,9 @@ Route::get('/foo', function () {
 });
 ```
 
-#### Passing Boolean Values
+#### 부울 값 전달
 
-If you need to specify the value of an option that does not accept string values, such as the `--force` flag on the `migrate:refresh` command, you should pass `true` or `false`:
+`migrate:refresh` 명령의 `--force` 플래그와 같이 문자열 값을 허용하지 않는 옵션 값을 지정해야하는 경우 `true` 또는 `false` 전달해야합니다.
 
 ```
 $exitCode = Artisan::call('migrate:refresh', [
@@ -549,9 +549,9 @@ $exitCode = Artisan::call('migrate:refresh', [
 
 <a name="calling-commands-from-other-commands"></a>
 
-### Calling Commands From Other Commands
+### 다른 명령에서 명령 호출
 
-Sometimes you may wish to call other commands from an existing Artisan command. You may do so using the `call` method. This `call` method accepts the command name and an array of command parameters:
+때로는 기존 Artisan 명령에서 다른 명령을 호출하고 싶을 수 있습니다. `call` 메소드를 사용하면됩니다. 이 `call` 메소드는 명령 이름과 명령 매개 변수 배열을 허용합니다.
 
 ```
 /**
@@ -569,7 +569,7 @@ public function handle()
 }
 ```
 
-If you would like to call another console command and suppress all of its output, you may use the `callSilent` method. The `callSilent` method has the same signature as the `call` method:
+다른 콘솔 명령을 호출하고 모든 출력을 억제하려면 `callSilent` 메서드를 사용할 수 있습니다. `callSilent` 메소드는 `call` 메소드와 동일한 서명을 갖습니다.
 
 ```
 $this->callSilent('email:send', [
